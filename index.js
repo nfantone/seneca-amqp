@@ -1,7 +1,8 @@
 'use strict';
 /**
  * Configures and builds a seneca instance
- * that uses AMQP as its transport.
+ * that uses AMQP as its transport, declaring clients
+ * and listeners.
  *
  * Expects a configuration object like this:
  *
@@ -16,7 +17,7 @@
  *  	"password": "guest"
  * 	},
  * 	"pins": {
- * 		"client": ["role:entity", "cmd:save"]
+ * 		"client": ["role:entity", "cmd:save"],
  * 		"listen": ["level:info"]
  * 	}
  * }
@@ -24,29 +25,51 @@
  * All attributes are optional. If you don't provide them,
  * sensible defaults will be used.
  *
+ * Also, monkey-patches `seneca.act` to return a Promise
+ * if no callback is provided.
+ *
  * @author nfantone
  */
 
+var util = require('util');
 var seneca = require('seneca');
+var Promise = require('bluebird');
+
+var cact = seneca.act;
+var pact = Promise.promisify(seneca.act, {
+  context: seneca
+});
+seneca.act = function(input, cb) {
+  if (util.isFunction(cb)) {
+    return cact(input, cb);
+  }
+  return pact(input);
+};
 
 function setup(method, config) {
   var pins = config.pins[method];
+  pins = util.isArray(pins) ? pins : [pins];
   if (pins && pins.length) {
     pins.forEach(function(pin) {
-      config.amqp.pin = pin;
-      seneca[method](config);
+      var options = JSON.parse(JSON.stringify(config.amqp));
+      options.pin = pin;
+      seneca[method](options);
     });
   }
   return seneca;
 }
 
-module.exports = function(config) {
+module.exports = function(config, cb) {
+  config = config || {};
   seneca(config.seneca)
     .use('amqp-transport');
 
   if (config.pins) {
     setup('listen', config);
     setup('client', config);
+  }
+  if (util.isFunction(cb)) {
+    seneca.ready(cb);
   }
   return seneca;
 };
