@@ -23,16 +23,16 @@
  *
  * All attributes are optional. If you don't provide them,
  * sensible defaults will be used.
- * 
+ *
  * @author nfantone
  */
 
-var seneca = require('seneca')
+var seneca = require('seneca');
 
 function setup(method, config) {
   var pins = config.pins[method];
   if (pins && pins.length) {
-    pins.forEach(function (pin) {
+    pins.forEach(function(pin) {
       config.amqp.pin = pin;
       seneca[method](config);
     });
@@ -40,13 +40,13 @@ function setup(method, config) {
   return seneca;
 }
 
-module.exports = function (config) {
+module.exports = function(config) {
   seneca(config.seneca)
-  .use('amqp-transport');
+    .use('amqp-transport');
 
   if (config.pins) {
     setup('listen', config);
     setup('client', config);
   }
   return seneca;
-}
+};
