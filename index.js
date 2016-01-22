@@ -53,7 +53,7 @@ function setup(method, config) {
 module.exports = function(config, cb) {
   config = config || {};
   seneca = seneca(config.seneca)
-    .use('amqp-transport');
+    .use(require('seneca-amqp-transport'));
 
   seneca.pact = Promise.promisify(seneca.act, { context: seneca });
 
