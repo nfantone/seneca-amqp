@@ -25,8 +25,7 @@
  * All attributes are optional. If you don't provide them,
  * sensible defaults will be used.
  *
- * Also, monkey-patches `seneca.act` to return a Promise
- * if no callback is provided.
+ * Also, adds `seneca.pact` method as promesified `seneca.act`.
  *
  * @author nfantone
  */
@@ -37,13 +36,16 @@ var Promise = require('bluebird');
 
 function setup(method, config) {
   var pins = config.pins[method];
-  pins = util.isArray(pins) ? pins : [pins];
-  if (pins && pins.length) {
-    pins.forEach(function(pin) {
-      var options = JSON.parse(JSON.stringify(config.amqp));
-      options.pin = pin;
-      seneca[method](options);
-    });
+  if (pins) {
+    pins = util.isArray(pins) ? pins : [pins];
+    if (pins.length > 0) {
+      pins.forEach(function(pin) {
+        var options = JSON.parse(JSON.stringify(config.amqp));
+        options.pin = pin;
+        options.type = 'amqp';
+        seneca[method](options);
+      });
+    }
   }
   return seneca;
 }
@@ -53,14 +55,7 @@ module.exports = function(config, cb) {
   seneca = seneca(config.seneca)
     .use('amqp-transport');
 
-  var cact = seneca.act;
-  var pact = Promise.promisify(seneca.act, { context: seneca });
-  seneca.act = function(input, cb) {
-    if (util.isFunction(cb)) {
-      return cact(input, cb);
-    }
-    return pact(input);
-  };
+  seneca.pact = Promise.promisify(seneca.act, { context: seneca });
 
   if (config.pins) {
     setup('listen', config);
