@@ -35,17 +35,6 @@ var util = require('util');
 var seneca = require('seneca');
 var Promise = require('bluebird');
 
-var cact = seneca.act;
-var pact = Promise.promisify(seneca.act, {
-  context: seneca
-});
-seneca.act = function(input, cb) {
-  if (util.isFunction(cb)) {
-    return cact(input, cb);
-  }
-  return pact(input);
-};
-
 function setup(method, config) {
   var pins = config.pins[method];
   pins = util.isArray(pins) ? pins : [pins];
@@ -61,8 +50,17 @@ function setup(method, config) {
 
 module.exports = function(config, cb) {
   config = config || {};
-  seneca(config.seneca)
+  seneca = seneca(config.seneca)
     .use('amqp-transport');
+
+  var cact = seneca.act;
+  var pact = Promise.promisify(seneca.act, { context: seneca });
+  seneca.act = function(input, cb) {
+    if (util.isFunction(cb)) {
+      return cact(input, cb);
+    }
+    return pact(input);
+  };
 
   if (config.pins) {
     setup('listen', config);
