@@ -24,7 +24,7 @@
   "homepage": "https://github.com/nfantone/seneca-amqp#readme",
   "dependencies": {
     "seneca": "^1.0.0",
-    "seneca-amqp-transport": "^0.1.1"
+    "seneca-amqp-transport": "disintegrator/seneca-amqp-transport#develop"
   },
   "devDependencies": {
     "eslint": "^1.10.3",
