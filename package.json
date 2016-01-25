@@ -14,16 +14,17 @@
     "amqp",
     "seneca",
     "rabbitmq",
-    "config"
+    "config",
+    "transport"
   ],
-  "author": "Nicolás Fantone (https://github.com/nfantone)",
+  "author": "Nicolás Fantone <nfantone@gmail.com> (https://github.com/nfantone)",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/nfantone/seneca-amqp/issues"
   },
   "homepage": "https://github.com/nfantone/seneca-amqp#readme",
   "dependencies": {
-    "bluebird": "^3.1.1",
+    "bluebird": "^3.1.4",
     "seneca": "^1.0.0",
     "seneca-amqp-transport": "disintegrator/seneca-amqp-transport#develop"
   },

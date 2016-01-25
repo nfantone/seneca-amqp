@@ -25,37 +25,61 @@
  * All attributes are optional. If you don't provide them,
  * sensible defaults will be used.
  *
- * Also, adds `seneca.pact` method as promesified `seneca.act`.
+ * Also, adds `seneca.pact` method as promesified `seneca.act` and
+ * disables 'mem-store' by default.
  *
  * @author nfantone
  */
 
-var util = require('util');
-var seneca = require('seneca');
-var Promise = require('bluebird');
+const util = require('util');
+const seneca = require('seneca');
+const Promise = require('bluebird');
+const defaults = require('lodash.defaultsdeep');
+
+module.exports = initialize;
+
+// Disable mem-store by default. It is assumed that stored
+// are used through a remote AMQP microservice. You can enable
+// it back, if needed.
+const DEFAULTS = {
+  seneca: {
+    default_plugins: {
+      'mem-store': false
+    }
+  }
+}
+
+function clone(o) {
+  try {
+    return JSON.parse(JSON.stringify(o));
+  } catch {
+    return undefined;
+  }
+}
 
 function setup(method, config) {
   var pins = config.pins[method];
   if (pins) {
     pins = util.isArray(pins) ? pins : [pins];
     if (pins.length > 0) {
-      pins.forEach(function(pin) {
-        var options = JSON.parse(JSON.stringify(config.amqp));
-        options.pin = pin;
-        options.type = 'amqp';
-        seneca[method](options);
-      });
+      var options = clone(config.amqp);
+      options.pins = pins;
+      options.type = 'amqp';
+      seneca[method](options);
     }
   }
   return seneca;
 }
 
-module.exports = function(config, cb) {
-  config = config || {};
+function initialize(config, cb) {
+  config = defaults(clone(config), DEFAULTS);
+
   seneca = seneca(config.seneca)
     .use(require('seneca-amqp-transport'));
 
-  seneca.pact = Promise.promisify(seneca.act, { context: seneca });
+  seneca.pact = Promise.promisify(seneca.act, {
+    context: seneca
+  });
 
   if (config.pins) {
     setup('listen', config);
