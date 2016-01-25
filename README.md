@@ -50,3 +50,5 @@ The `seneca` instance created by this module,
 
 ## License
 MIT
+
+[1]: http://senecajs.org/
