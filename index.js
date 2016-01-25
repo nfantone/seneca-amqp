@@ -31,8 +31,8 @@
  * @author nfantone
  */
 
+var seneca = require('seneca');
 const util = require('util');
-const seneca = require('seneca');
 const Promise = require('bluebird');
 const defaults = require('lodash.defaultsdeep');
 
@@ -52,7 +52,7 @@ const DEFAULTS = {
 function clone(o) {
   try {
     return JSON.parse(JSON.stringify(o));
-  } catch {
+  } catch (e) {
     return undefined;
   }
 }
