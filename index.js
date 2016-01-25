@@ -38,8 +38,8 @@ const defaults = require('lodash.defaultsdeep');
 
 module.exports = initialize;
 
-// Disable mem-store by default. It is assumed that stored
-// are used through a remote AMQP microservice. You can enable
+// Disable mem-store by default. It is assumed that stores
+// are defined in a remote AMQP microservice. You can enable
 // it back, if needed.
 const DEFAULTS = {
   seneca: {
@@ -62,10 +62,12 @@ function setup(method, config) {
   if (pins) {
     pins = util.isArray(pins) ? pins : [pins];
     if (pins.length > 0) {
-      var options = clone(config.amqp);
-      options.pins = pins;
-      options.type = 'amqp';
-      seneca[method](options);
+      pins.forEach(function(pin) {
+        var options = clone(config.amqp);
+        options.pin = pin;
+        options.type = 'amqp';
+        seneca[method](options);
+      });
     }
   }
   return seneca;
@@ -73,7 +75,6 @@ function setup(method, config) {
 
 function initialize(config, cb) {
   config = defaults(clone(config), DEFAULTS);
-
   seneca = seneca(config.seneca)
     .use(require('seneca-amqp-transport'));
 
