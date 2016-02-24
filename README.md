@@ -31,7 +31,7 @@ var config = {
      pins: {
       // Pins used in .client and .listen methods
       client: ['role:entity', 'cmd:save'],
-      listen: ['level:info']
+      listen: ['level:info', ['cmd:rollback', 'proc:status']]
      }
   }
 }
@@ -49,7 +49,7 @@ The `seneca` instance created by this module,
 - Defines a new `seneca.pact` method that behaves like a _promesified_ `seneca.act`.
 - Disables `'mem-store'` by default. It is assumed that stores are listeners in remote microservice wired up in an AMQP fashion.
 
-> If you need to enable it back, you can pass `{ seneca: { default_plugins: { 'mem-store': false } }` to the configuration object.
+> If you need to enable it back, you can pass `{ seneca: { default_plugins: { 'mem-store': true } }` to the configuration object.
 
 ## License
 MIT

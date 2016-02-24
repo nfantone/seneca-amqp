@@ -47,7 +47,7 @@ const DEFAULTS = {
       'mem-store': false
     }
   }
-}
+};
 
 function clone(o) {
   try {
@@ -90,4 +90,4 @@ function initialize(config, cb) {
     seneca.ready(cb);
   }
   return seneca;
-};
+}
