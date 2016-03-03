@@ -8,33 +8,31 @@ Small module that helps create a pre-configured `seneca` ([http://senecajs.org/]
 [![js-semistandard-style](https://cdn.rawgit.com/flet/semistandard/master/badge.svg)](https://github.com/Flet/semistandard)
 
 ```
-npm install --save nfantone/seneca-amqp
+npm install --save seneca-amqp
 ```
 
 ## Usage
-You use this module as a direct replacement for `seneca`. The returned instance uses `seneca-amqp-transport` and have clients and listeners already declared.
+You use this module as a direct replacement for `seneca`. The returned instance uses `seneca-amqp-transport` and have clients and listeners already declared (no need to call `.listen` or `.client`).
 
 ```javascript
 var config = {
-  {
-     seneca: {
-       // Any global seneca option
-      timeout: 3000
-     },
-     amqp: {
-      // Broker connection settings
-      hostname: 'dev.rabbitmq.com',
-      port: 5672,
-      username: 'guest',
-      password: 'guest'
-     },
-     pins: {
-      // Pins used in .client and .listen methods
-      client: ['role:entity', 'cmd:save'],
-      listen: ['level:info', ['cmd:rollback', 'proc:status']]
-     }
-  }
-}
+   seneca: {
+     // Any global seneca option
+    timeout: 3000
+   },
+   amqp: {
+    // Broker connection settings
+    hostname: 'dev.rabbitmq.com',
+    port: 5672,
+    username: 'guest',
+    password: 'guest'
+   },
+   pins: {
+    // Pins used in .client and .listen methods
+    client: ['role:entity', 'cmd:save'],
+    listen: ['level:info', ['cmd:rollback', 'proc:status']]
+   }
+};
 
 var seneca = require('seneca-amqp')(config, function() {
   // This callback is fired on `seneca.ready` (optional)
