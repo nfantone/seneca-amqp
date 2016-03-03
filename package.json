@@ -1,6 +1,6 @@
 {
   "name": "seneca-amqp",
-  "version": "1.0.2-dev",
+  "version": "1.0.2",
   "description": "A small module that builds a pre-configured seneca instance using AMQP as its transport",
   "main": "index.js",
   "scripts": {
