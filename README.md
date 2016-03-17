@@ -29,13 +29,13 @@ var config = {
    },
    pins: {
     // Pins used in .client and .listen methods
-    client: ['role:entity,cmd:save'],
+    client: 'role:entity,cmd:save',
     listen: ['level:info', 'cmd:rollback,proc:status']
   },
   autoStart: false
 };
 
-var seneca = require('seneca-amqp')(config)
+var seneca = require('seneca-amqp')(config);
 seneca.start()
   .then(() => console.log('Seneca is ready'))
   .catch(console.error);
@@ -46,8 +46,8 @@ The `seneca` instance created by this module,
 - Uses [seneca-amqp-transport](https://github.com/disintegrator/seneca-amqp-transport) as its transport layer. There's no need to declare it as en explicit dependency: this module will do that for you.
 - Simplifies configuration of the AMQP broker and declaration of client/listeners to a minimum.
 - Defines a new `seneca.actAsync` method that behaves like a _promisified_ `seneca.act`.
-- Disables `'mem-store'` by default. It is assumed that stores are listeners in remote microservice wired up in an AMQP fashion.
 - Adds a new `seneca.start` method that returns a promise that fulfills when all clients and listeners have been declared and fired up.
+- Disables `'mem-store'` by default. It is assumed that stores are listeners in remote microservice wired up in an AMQP fashion.
 
 > If you need to enable it back, you can pass `{ seneca: { default_plugins: { 'mem-store': true } }` to the configuration object.
 
