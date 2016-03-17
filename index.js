@@ -19,16 +19,17 @@
  * 	"pins": {
  * 		"client": ["role:entity", "cmd:save"],
  * 		"listen": ["level:info"]
- * 	}
+ * 	},
+ * 	"autoStart": true
  * }
  *
  * All attributes are optional. If you don't provide them,
  * sensible defaults will be used.
  *
- * Also, adds `seneca.pact` method as promesified `seneca.act` and
+ * Also, adds `seneca.actAsync` method as promisified `seneca.act` and
  * disables 'mem-store' by default.
  *
- * @author nfantone
+ * @module seneca-amqp
  */
 
 var seneca = require('seneca');
@@ -36,6 +37,7 @@ const util = require('util');
 const Promise = require('bluebird');
 const defaults = require('lodash.defaultsdeep');
 
+// Module API
 module.exports = initialize;
 
 // Disable mem-store by default. It is assumed that stores
@@ -46,7 +48,8 @@ const DEFAULTS = {
     default_plugins: {
       'mem-store': false
     }
-  }
+  },
+  autoStart: false
 };
 
 function clone(o) {
@@ -73,21 +76,37 @@ function setup(method, config) {
   return seneca;
 }
 
+function start(config) {
+  return function() {
+    if (config.pins) {
+      setup('listen', config);
+      setup('client', config);
+    }
+
+    return Promise.promisify(seneca.ready, {
+      context: seneca
+    })();
+  };
+}
+
 function initialize(config, cb) {
+  cb = util.isFunction(cb) ? cb : Function.prototype;
   config = defaults(clone(config), DEFAULTS);
   seneca = seneca(config.seneca)
     .use(require('seneca-amqp-transport'));
 
-  seneca.pact = Promise.promisify(seneca.act, {
+  seneca.actAsync = Promise.promisify(seneca.act, {
     context: seneca
   });
 
-  if (config.pins) {
-    setup('listen', config);
-    setup('client', config);
-  }
-  if (util.isFunction(cb)) {
-    seneca.ready(cb);
+  // Alias for `actAsync`
+  seneca.pact = seneca.actAsync;
+
+  seneca.start = start(config);
+
+  if (config.autoStart) {
+    seneca.start()
+      .then(cb, cb);
   }
   return seneca;
 }
