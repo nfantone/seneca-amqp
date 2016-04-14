@@ -36,9 +36,7 @@ var seneca = require('seneca');
 const util = require('util');
 const Promise = require('bluebird');
 const defaults = require('lodash.defaultsdeep');
-
-// Module API
-module.exports = initialize;
+const castarray = require('lodash.castarray');
 
 // Disable mem-store by default. It is assumed that stores
 // are defined in a remote AMQP microservice. You can enable
@@ -52,6 +50,9 @@ const DEFAULTS = {
   autoStart: false
 };
 
+// Module API
+module.exports = initialize;
+
 function clone(o) {
   try {
     return JSON.parse(JSON.stringify(o));
@@ -63,7 +64,7 @@ function clone(o) {
 function setup(method, config) {
   var pins = config.pins[method];
   if (pins) {
-    pins = util.isArray(pins) ? pins : [pins];
+    pins = castarray(pins);
     if (pins.length > 0) {
       pins.forEach(function(pin) {
         var options = clone(config.amqp);
@@ -98,9 +99,6 @@ function initialize(config, cb) {
   seneca.actAsync = Promise.promisify(seneca.act, {
     context: seneca
   });
-
-  // Alias for `actAsync`
-  seneca.pact = seneca.actAsync;
 
   seneca.start = start(config);
 
