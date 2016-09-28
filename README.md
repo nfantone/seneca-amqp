@@ -1,11 +1,12 @@
 ![Seneca](http://senecajs.org/files/assets/seneca-logo.png)
 
+[![js-semistandard-style](https://img.shields.io/badge/code%20style-semistandard-brightgreen.svg?style=flat-square)](https://github.com/Flet/semistandard)
+
 > A [Seneca.js][1] AMQP-ready thin wrapper.
 
 # seneca-amqp
 Small module that helps create a pre-configured `seneca` ([http://senecajs.org/](http://senecajs.org/)) instance that uses AMQP as its transport layer and eases declaration of clients and listeners.
 
-[![js-semistandard-style](https://cdn.rawgit.com/flet/semistandard/master/badge.svg)](https://github.com/Flet/semistandard)
 
 ```
 npm install --save seneca-amqp
