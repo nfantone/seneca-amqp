@@ -7,20 +7,20 @@
  * Expects a configuration object like this:
  *
  * {
- * 	"seneca": {
- * 		"timeout": 3000
- * 	},
- * 	"amqp": {
- *  	"hostname": "dev.rabbitmq.com",
- *  	"port": 5672,
- *  	"username": "guest",
- *  	"password": "guest"
- * 	},
- * 	"pins": {
- * 		"client": ["role:entity", "cmd:save"],
- * 		"listen": ["level:info"]
- * 	},
- * 	"autoStart": true
+ *   "seneca": {
+ *   "timeout": 3000
+ *   },
+ *   "amqp": {
+ *     "hostname": "dev.rabbitmq.com",
+ *      "port": 5672,
+ *      "username": "guest",
+ *      "password": "guest"
+ *   },
+ *   "pins": {
+ *     "client": ["role:entity", "cmd:save"],
+ *     "listen": ["level:info"]
+ *   },
+ *   "autoStart": true
  * }
  *
  * All attributes are optional. If you don't provide them,
