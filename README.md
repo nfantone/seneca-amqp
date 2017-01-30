@@ -5,6 +5,8 @@
 > A [Seneca.js][1] AMQP-ready thin wrapper.
 
 # seneca-amqp
+
+[![Greenkeeper badge](https://badges.greenkeeper.io/nfantone/seneca-amqp.svg)](https://greenkeeper.io/)
 Small module that helps create a pre-configured `seneca` ([http://senecajs.org/](http://senecajs.org/)) instance that uses AMQP as its transport layer and eases declaration of clients and listeners.
 
 
